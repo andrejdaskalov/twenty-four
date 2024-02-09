@@ -15,7 +15,7 @@ class RegisterView extends StatelessWidget {
       return;
     }
     FirebaseAuth.instance
-        .createUserWithEmailAndPassword(email: email, password: password)
+        .createUserWithEmailAndPassword(email: email.trim(), password: password)
         .then((value)  {
           showSnackbar("Successfully registered");
           goBack();

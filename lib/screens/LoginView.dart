@@ -69,7 +69,7 @@ void tryLogin(String email, String password,
     void Function(String test) showSnackbar) async {
   try {
     await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: email,
+      email: email.trim(),
       password: password,
     );
   } on FirebaseAuthException catch (e) {

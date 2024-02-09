@@ -2,8 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:twenty_four/dependency_injection/injectable_config.dart';
 import 'package:twenty_four/screens/LoginView.dart';
 import 'package:twenty_four/screens/RegisterView.dart';
+import 'package:twenty_four/screens/main/main_screen.dart';
 
 import 'firebase_options.dart';
 
@@ -12,6 +14,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  configureDependencies();
   runApp(const MyApp());
 }
 
@@ -32,7 +35,7 @@ class MyApp extends StatelessWidget {
         GoRoute(
           path: '/',
           builder: (context, state) =>
-              const MyHomePage(title: 'Flutter Demo Home Page'),
+              const MainScreen(),
         ),
         GoRoute(
           path: '/login',
