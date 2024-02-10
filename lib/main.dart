@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:twenty_four/dependency_injection/injectable_config.dart';
+import 'package:twenty_four/repository/topic_repository.dart';
 import 'package:twenty_four/screens/LoginView.dart';
 import 'package:twenty_four/screens/RegisterView.dart';
 import 'package:twenty_four/screens/main/main_screen.dart';
@@ -15,20 +16,24 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   configureDependencies();
-  runApp(const MyApp());
+  final topic = await getIt.get<TopicRepository>().getTodayTopic();
+  final color = Color(int.parse(topic.color.replaceFirst("#", "0xFF")));
+  runApp(MyApp(color: color));
 }
 
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Color? color;
+
+  const MyApp({super.key, this.color});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'Flutter Demo',
+      title: 'TwentyFour',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueGrey),
+        colorScheme: ColorScheme.fromSeed(seedColor: color ?? Colors.blueGrey),
         useMaterial3: true,
       ),
       routerConfig: GoRouter(routes: [

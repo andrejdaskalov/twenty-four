@@ -11,6 +11,7 @@ class TopicApi {
     final today = DateTime.now();
     final snapshot = await topics
         .where('date', isGreaterThanOrEqualTo: today.copyWith(hour: 0, minute: 0, second: 0, millisecond: 0))
+        .where('date', isLessThanOrEqualTo: today.copyWith(hour: 23, minute: 59, second: 59, millisecond: 999))
         .orderBy('date')
         .limit(1)
         .get();

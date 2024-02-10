@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twenty_four/screens/main/bloc/main_screen_bloc.dart';
 
 import '../../dependency_injection/injectable_config.dart';
+import '../../domain/post.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -12,7 +13,7 @@ class MainScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Twenty Four"),
+        title: const Text("TwentyFour"),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -35,15 +36,50 @@ class MainScreen extends StatelessWidget {
                 return const Text("no topic");
               }
 
-              return Text(
-                topic.toString(),
-                style: TextStyle(
-                  color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
-                ),
+              return Column(
+                children: [
+                  Text(
+                    topic.toString(),
+                    style: TextStyle(
+                      color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: state.posts?.length ?? 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      return CardPost(post: state.posts![index]);
+                    },
+                  )
+                ],
               );
             },
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CardPost extends StatelessWidget {
+  final Post post;
+  const CardPost({
+    super.key,
+    required this.post,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: [
+          (post.mediaURIs.isEmpty)
+              ? const Text("No media")
+              :
+          Image.network(post.mediaURIs[0]),
+          Text(post.title),
+          Text(post.description),
+        ],
       ),
     );
   }
