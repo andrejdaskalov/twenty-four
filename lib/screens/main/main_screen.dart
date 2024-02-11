@@ -1,11 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:twenty_four/screens/main/bloc/main_screen_bloc.dart';
 
 import '../../dependency_injection/injectable_config.dart';
 import '../../domain/post.dart';
-import '../camera/camera_screen.dart';
+import '../add_post/camera_screen.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});

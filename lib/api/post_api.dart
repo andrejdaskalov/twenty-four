@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../domain/post.dart';
@@ -40,6 +41,18 @@ class PostApi {
       topicId: e['topicId'],
       date: e['date'].toDate()
     )).toList();
+  }
+
+  Future<void> addPost(Post post) async {
+    await posts.add({
+      'title': post.title,
+      'description': post.description,
+      'mediaURIs': post.mediaURIs,
+      'topicId': post.topicId,
+      'date': post.date,
+      'userUID': post.userUID,
+      'likes': post.likes,
+    });
   }
 
 }
