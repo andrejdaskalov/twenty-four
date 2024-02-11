@@ -44,12 +44,14 @@ class MainScreen extends StatelessWidget {
                       color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
                     ),
                   ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.posts?.length ?? 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CardPost(post: state.posts![index]);
-                    },
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: state.posts?.length ?? 0,
+                      itemBuilder: (BuildContext context, int index) {
+                        return CardPost(post: state.posts![index]);
+                      },
+                    ),
                   )
                 ],
               );
