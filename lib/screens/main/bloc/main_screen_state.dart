@@ -24,6 +24,7 @@ class MainScreenState {
 }
 
 enum MainScreenStateEnum {
+  initial,
   loading,
   loaded,
   error,

@@ -1,4 +1,3 @@
-import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -18,12 +17,17 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
 
   MainScreenBloc(
       this.topicRepository, this.postRepository,
-      ) : super(MainScreenState(state: MainScreenStateEnum.loading)) {
+      ) : super(MainScreenState(state: MainScreenStateEnum.initial)) {
     on<MainScreenEvent>((event, emit) async {
-      emit(MainScreenState(state: MainScreenStateEnum.loading));
-      final topic = await topicRepository.getTodayTopic();
-      final posts = await postRepository.getPostsByTopicId(topic.id);
-      emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.loaded));
+      try {
+        emit(state.copyWith(state: MainScreenStateEnum.loading));
+        final topic = await topicRepository.getTodayTopic();
+        final posts = await postRepository.getPostsByTopicId(topic.id);
+        emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.loaded));
+        emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.initial));
+      } catch (e) {
+        emit(MainScreenState(state: MainScreenStateEnum.error));
+      }
     });
   }
 }

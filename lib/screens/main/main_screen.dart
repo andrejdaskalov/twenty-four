@@ -11,61 +11,85 @@ class MainScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("TwentyFour"),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CameraScreen()));
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: BlocProvider(
-          create: (BuildContext context) {
-            var instance = getIt.get<MainScreenBloc>();
-            instance.add(GetTopic());
-            return instance;
-          },
-          child: RefreshIndicator(
-            onRefresh: () {
-              context.read<MainScreenBloc>().add(GetTopic());
-              return context.read<MainScreenBloc>().stream
-                  .firstWhere((state) => state.state != MainScreenStateEnum.loading);
-            },
-            child: BlocBuilder<MainScreenBloc, MainScreenState>(
-              builder: (BuildContext context, MainScreenState state) {
-                var topic = state.topic;
-                if (topic == null) {
-                  return const Text("no topic");
-                }
 
-                return Column(
-                  children: [
-                    Text(
-                      topic.toString(),
-                      style: TextStyle(
-                        color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        itemCount: state.posts?.length ?? 0,
-                        itemBuilder: (BuildContext context, int index) {
-                          return CardPost(post: state.posts![index]);
-                        },
-                      ),
-                    )
-                  ],
-                );
-              },
+    Future<void> onRefresh(BuildContext context) async{
+      final bloc = context.read<MainScreenBloc>();
+      debugPrint("From Refresh: ${bloc.hashCode}");
+      var stream = bloc.stream.firstWhere((state) =>
+          state.state == MainScreenStateEnum.loaded ||
+          state.state == MainScreenStateEnum.error);
+      bloc.add(GetTopic());
+      await stream;
+      return Future.value();
+    }
+
+
+    return BlocProvider(
+      create: (context) {
+        var instance = getIt.get<MainScreenBloc>();
+        debugPrint("From Provider: ${instance.hashCode}");
+        instance.add(GetTopic());
+        return instance;
+      },
+
+      child: Builder( // needed to provide a context with the blocprovider bloc,
+                      // so that the context.read<MainScreenBloc>() can be used
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text("TwentyFour"),
             ),
-          ),
-        ),
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => const CameraScreen()));
+              },
+              child: const Icon(Icons.add),
+            ),
+            body: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: RefreshIndicator(
+                onRefresh: () {
+                  return onRefresh(context);
+                },
+                child: BlocBuilder<MainScreenBloc, MainScreenState>(
+                  builder: (BuildContext context, MainScreenState state) {
+                    final bloc = context.read<MainScreenBloc>();
+                    debugPrint("From Builder: ${bloc.hashCode}");
+                    var topic = state.topic;
+                    if (topic == null) {
+                      return const Text("no topic");
+                    } else if (state.state == MainScreenStateEnum.error) {
+                      return const Text("Error");
+                    }
+
+                    return Column(
+                      children: [
+                        Text(
+                          topic.toString(),
+                          style: TextStyle(
+                            color: Color(
+                                int.parse(topic.color.replaceFirst("#", "0xFF"))),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: state.posts?.length ?? 0,
+                            itemBuilder: (BuildContext context, int index) {
+                              return CardPost(post: state.posts![index]);
+                            },
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+          );
+        }
       ),
     );
   }
@@ -73,6 +97,7 @@ class MainScreen extends StatelessWidget {
 
 class CardPost extends StatelessWidget {
   final Post post;
+
   const CardPost({
     super.key,
     required this.post,
@@ -85,8 +110,7 @@ class CardPost extends StatelessWidget {
         children: [
           (post.mediaURIs.isEmpty)
               ? const Text("No media")
-              :
-          Image.network(post.mediaURIs[0]),
+              : Image.network(post.mediaURIs[0]),
           Text(post.title),
           Text(post.description),
         ],
