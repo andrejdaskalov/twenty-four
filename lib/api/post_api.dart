@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 
 import '../domain/post.dart';
@@ -10,7 +9,7 @@ class PostApi {
   Future<List<Post>> getPostsByTopicId(String topicId) async {
     final snapshot = await posts
         .where('topicId', isEqualTo: topicId)
-        .orderBy('date')
+        .orderBy('date', descending: false)
         .get();
     final docs = snapshot.docs;
     if (docs.isEmpty) {
@@ -52,6 +51,18 @@ class PostApi {
       'date': post.date,
       'userUID': post.userUID,
       'likes': post.likes,
+    });
+  }
+
+  Future<void> likePost(String postId) async {
+    await posts.doc(postId).update({
+      'likes': FieldValue.increment(1),
+    });
+  }
+
+  Future<void> unlikePost(String postId) async {
+    await posts.doc(postId).update({
+      'likes': FieldValue.increment(-1),
     });
   }
 

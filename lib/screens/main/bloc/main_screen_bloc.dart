@@ -29,5 +29,17 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
         emit(MainScreenState(state: MainScreenStateEnum.error));
       }
     });
+
+    on<LikePost>((event, emit) async {
+      final postId = event.postId;
+      if (state.posts!.firstWhere((element) => element.id == postId).likedByUser) {
+        await postRepository.unlikePost(event.postId);
+      } else {
+        await postRepository.likePost(event.postId);
+      }
+      final topic = state.topic;
+      final posts = await postRepository.getPostsByTopicId(topic!.id);
+      emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.loaded));
+    });
   }
 }

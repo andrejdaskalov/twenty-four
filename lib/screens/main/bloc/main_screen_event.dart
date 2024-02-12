@@ -4,3 +4,9 @@ part of 'main_screen_bloc.dart';
 abstract class MainScreenEvent {}
 
 class GetTopic extends MainScreenEvent {}
+
+class LikePost extends MainScreenEvent {
+  final String postId;
+
+  LikePost(this.postId);
+}
