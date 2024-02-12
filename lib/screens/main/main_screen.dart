@@ -29,33 +29,41 @@ class MainScreen extends StatelessWidget {
             instance.add(GetTopic());
             return instance;
           },
-          child: BlocBuilder<MainScreenBloc, MainScreenState>(
-            builder: (BuildContext context, MainScreenState state) {
-              var topic = state.topic;
-              if (topic == null) {
-                return const Text("no topic");
-              }
-
-              return Column(
-                children: [
-                  Text(
-                    topic.toString(),
-                    style: TextStyle(
-                      color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
-                    ),
-                  ),
-                  Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: state.posts?.length ?? 0,
-                      itemBuilder: (BuildContext context, int index) {
-                        return CardPost(post: state.posts![index]);
-                      },
-                    ),
-                  )
-                ],
-              );
+          child: RefreshIndicator(
+            onRefresh: () {
+              context.read<MainScreenBloc>().add(GetTopic());
+              return context.read<MainScreenBloc>().stream
+                  .firstWhere((state) => state.state != MainScreenStateEnum.loading);
             },
+            child: BlocBuilder<MainScreenBloc, MainScreenState>(
+              builder: (BuildContext context, MainScreenState state) {
+                var topic = state.topic;
+                if (topic == null) {
+                  return const Text("no topic");
+                }
+
+                return Column(
+                  children: [
+                    Text(
+                      topic.toString(),
+                      style: TextStyle(
+                        color: Color(int.parse(topic.color.replaceFirst("#", "0xFF"))),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: state.posts?.length ?? 0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CardPost(post: state.posts![index]);
+                        },
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

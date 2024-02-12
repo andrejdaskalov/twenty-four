@@ -18,11 +18,12 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
 
   MainScreenBloc(
       this.topicRepository, this.postRepository,
-      ) : super(MainScreenState()) {
+      ) : super(MainScreenState(state: MainScreenStateEnum.loading)) {
     on<MainScreenEvent>((event, emit) async {
+      emit(MainScreenState(state: MainScreenStateEnum.loading));
       final topic = await topicRepository.getTodayTopic();
       final posts = await postRepository.getPostsByTopicId(topic.id);
-      emit(MainScreenState(topic: topic, posts: posts));
+      emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.loaded));
     });
   }
 }
