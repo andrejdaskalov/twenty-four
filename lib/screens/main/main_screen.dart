@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twenty_four/screens/main/bloc/main_screen_bloc.dart';
 
 import '../../dependency_injection/injectable_config.dart';
@@ -38,7 +40,17 @@ class MainScreen extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: const Text("TwentyFour"),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    FirebaseAuth.instance.signOut();
+                    GoRouter.of(context).go("/login");
+                  },
+                  icon: const Icon(Icons.account_circle_outlined),
+                ),
+              ],
             ),
+
             floatingActionButton: FloatingActionButton(
               onPressed: () {
                 Navigator.of(context).push(

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-
 import '../common_components/text_input.dart';
-import '/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class RegisterView extends StatelessWidget {
@@ -16,11 +13,10 @@ class RegisterView extends StatelessWidget {
     }
     FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email.trim(), password: password)
-        .then((value)  {
-          showSnackbar("Successfully registered");
-          goBack();
-        })
-        .catchError((error) => showSnackbar(error.message));
+        .then((value) {
+      showSnackbar("Successfully registered");
+      goBack();
+    }).catchError((error) => showSnackbar(error.message));
   }
 
   @override
@@ -44,7 +40,8 @@ class RegisterView extends StatelessWidget {
               label: "Email",
             ),
             TFPasswordInput(controller: passwordController, label: "Password"),
-            TFPasswordInput(controller: repeatPasswordController, label: "Repeat Password"),
+            TFPasswordInput(
+                controller: repeatPasswordController, label: "Repeat Password"),
             Container(
               margin: const EdgeInsets.only(top: 20),
               child: ElevatedButton(

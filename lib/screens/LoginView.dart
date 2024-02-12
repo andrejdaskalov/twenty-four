@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:go_router/go_router.dart';
 import 'package:twenty_four/common_components/text_input.dart';
-import '/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'RegisterView.dart';
@@ -29,19 +28,20 @@ class LoginView extends StatelessWidget {
                   controller: emailController,
                   label: "Email",
                 ),
-                TFPasswordInput(controller: passwordController, label: "Password"),
+                TFPasswordInput(
+                    controller: passwordController, label: "Password"),
                 Container(
                   margin: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(
                     onPressed: () {
                       tryLogin(emailController.text, passwordController.text,
-                              (String message) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(message),
-                              ),
-                            );
-                          });
+                          () {
+                        GoRouter.of(context).go("/");
+                      }, (error) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(error),
+                        ));
+                      });
                     },
                     child: const Text("Login"),
                   ),
@@ -50,8 +50,10 @@ class LoginView extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 20),
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (
-                          context) => RegisterView()));
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => RegisterView()));
                     },
                     child: const Text("Not registered? Register here."),
                   ),
@@ -65,18 +67,24 @@ class LoginView extends StatelessWidget {
   }
 }
 
-void tryLogin(String email, String password,
-    void Function(String test) showSnackbar) async {
+void tryLogin(
+  String email,
+  String password,
+  void Function() onSuccess,
+  void Function(String error) onError,
+) async {
   try {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(
       email: email.trim(),
       password: password,
-    );
+    )
+        .then((value) {
+      onSuccess();
+    }).onError((error, stackTrace) {
+      onError(error.toString());
+    });
   } on FirebaseAuthException catch (e) {
-    if (e.code == 'invalid-credential') {
-      showSnackbar("No user found for that email.");
-    } else {
-      showSnackbar(e.message ?? "An error occurred");
-    }
+    onError(e.message ?? "An error occurred");
   }
 }
