@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.tasks.KaptGenerateStubs
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     ext.kotlin_version = '1.9.22'
     repositories {
@@ -24,6 +27,16 @@ allprojects {
                     }
                 }
             }
+        }
+    }
+    tasks.withType(KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    tasks.withType(KaptGenerateStubs).configureEach {
+        kotlinOptions {
+            jvmTarget = "1.8"
         }
     }
 }

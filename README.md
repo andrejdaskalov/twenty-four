@@ -2,15 +2,21 @@
 
 A novel social media experience. A Mobile Information Systems project for FCSE
 
-## Getting Started
+# Getting Started
 
-This project is a starting point for a Flutter application.
+## Installation
 
-A few resources to get you started if this is your first Flutter project:
+After cloning the repository and having installed the necessary tools for flutter applications: 
+[Installation Instructions](https://docs.flutter.dev/get-started/install), run: 
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+flutter pub get
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+and then run the application with: 
+
+```bash 
+flutter run
+```
+
+
