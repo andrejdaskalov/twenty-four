@@ -37,9 +37,7 @@ class MainScreenBloc extends Bloc<MainScreenEvent, MainScreenState> {
       } else {
         await postRepository.likePost(event.postId);
       }
-      final topic = state.topic;
-      final posts = await postRepository.getPostsByTopicId(topic!.id);
-      emit(MainScreenState(topic: topic, posts: posts, state: MainScreenStateEnum.loaded));
+      add(GetTopic());
     });
   }
 }

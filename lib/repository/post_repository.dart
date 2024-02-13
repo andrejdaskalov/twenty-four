@@ -22,10 +22,11 @@ class PostRepository {
     var posts = await _postApi.getPostsByTopicId(topicId);
     final user = FirebaseAuth.instance.currentUser?.uid;
     for (var post in posts) {
-      var downloadUrls = await Future.wait(post.mediaURIs.map((uri) async {
-        return await _mediaApi.getDownloadURL(uri);
-      }));
-      post.mediaURIs = downloadUrls;
+      // var downloadUrls = await Future.wait(post.mediaURIs.map((uri) async {
+      //   return await _mediaApi.getDownloadURL(uri);
+      // }));
+      post.mediaURIs = ["https://picsum.photos/300/200"]; // todo remove this line and uncomment surrounding
+      // post.mediaURIs = downloadUrls;
       post.likedByUser = await _likesApi.userHasLiked(post.id!, user ?? '');
     }
     return posts;

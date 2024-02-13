@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:twenty_four/domain/topic.dart';
 import 'package:twenty_four/screens/main/bloc/main_screen_bloc.dart';
 
 import '../../dependency_injection/injectable_config.dart';
@@ -36,8 +37,16 @@ class MainScreen extends StatelessWidget {
           // so that the context.read<MainScreenBloc>() can be used
           builder: (BuildContext context) {
         return Scaffold(
+          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           appBar: AppBar(
-            title: const Text("TwentyFour", style: TextStyle(fontWeight: FontWeight.bold),),
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            title: Text(
+              "TwentyFour",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+              ),
+            ),
             actions: [
               IconButton(
                 onPressed: () {
@@ -55,50 +64,101 @@ class MainScreen extends StatelessWidget {
             },
             child: const Icon(Icons.add),
           ),
-          body: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child: RefreshIndicator(
-              onRefresh: () {
-                return onRefresh(context);
-              },
-              child: BlocBuilder<MainScreenBloc, MainScreenState>(
-                builder: (BuildContext context, MainScreenState state) {
-                  final bloc = context.read<MainScreenBloc>();
-                  debugPrint("From Builder: ${bloc.hashCode}");
-                  var topic = state.topic;
-                  if (topic == null) {
-                    return const Text("no topic");
-                  } else if (state.state == MainScreenStateEnum.error) {
-                    return const Text("Error");
-                  }
+          body: RefreshIndicator(
+            onRefresh: () {
+              return onRefresh(context);
+            },
+            child: BlocBuilder<MainScreenBloc, MainScreenState>(
+              builder: (BuildContext context, MainScreenState state) {
+                final bloc = context.read<MainScreenBloc>();
+                debugPrint("From Builder: ${bloc.hashCode}");
+                final topic = state.topic ;
+                if (topic == null) {
+                  return const Text("no topic");
+                } else if (state.state == MainScreenStateEnum.error) {
+                  return const Text("Error");
+                }
 
-                  return Column(
-                    children: [
-                      Text(
-                        topic.toString(),
-                        style: TextStyle(
-                          color: Color(
-                              int.parse(topic.color.replaceFirst("#", "0xFF"))),
+                return ListView(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 30),
+                      child: FoldingHeading(topic: topic, height: 100,),
+                    ),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).colorScheme.background,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
                         ),
-                      ),
-                      Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
-                          physics: const AlwaysScrollableScrollPhysics(),
+                          physics: const NeverScrollableScrollPhysics(),
                           itemCount: state.posts?.length ?? 0,
                           itemBuilder: (BuildContext context, int index) {
                             return CardPost(post: state.posts![index]);
                           },
                         ),
-                      )
-                    ],
-                  );
-                },
-              ),
+                      ),
+                    )
+                  ],
+                );
+              },
             ),
           ),
         );
       }),
+    );
+  }
+}
+
+class FoldingHeading extends StatelessWidget {
+  const FoldingHeading({
+    super.key,
+    required this.topic,
+    required this.height,
+  });
+
+  final Topic? topic;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+      child: SizedBox(
+        height: height,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              "Today's topic: ",
+              style: TextStyle(
+                color: Color(
+                    int.parse(topic!.color.replaceFirst("#", "0xFF")))
+                .withOpacity(0.5),
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              topic.toString(),
+              style: TextStyle(
+                color: Color(
+                    int.parse(topic!.color.replaceFirst("#", "0xFF"))),
+                fontSize: 30,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -170,5 +230,3 @@ class LikeButton extends StatelessWidget {
     ]);
   }
 }
-
-

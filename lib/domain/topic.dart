@@ -8,6 +8,6 @@ class Topic {
 
   @override
   String toString() {
-    return "Topic: $topic";
+    return topic;
   }
 }
