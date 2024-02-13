@@ -45,6 +45,8 @@ dependencies:
   go_router: ^13.1.0
   camerawesome: ^2.0.0+1
   better_open_file: ^3.6.5
+  geolocator: ^10.1.1
+  geocoding: ^2.1.1
 
 dev_dependencies:
   injectable_generator:

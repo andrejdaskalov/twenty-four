@@ -9,7 +9,7 @@ class Post {
   final int likes;
   List<String> mediaURIs;
   final DateTime date;
-  final Location? location;
+  final String? location;
   bool likedByUser; // This field is not persisted in the database,
   // but it is used to keep track of whether the current user has liked the post.
 
@@ -32,22 +32,3 @@ class Post {
   }
 }
 
-class Location {
-  final double latitude;
-  final double longitude;
-
-  Location({required this.latitude, required this.longitude});
-
-  @override
-  String toString() {
-    return "Location: $latitude, $longitude";
-  }
-
-  GeoPoint toGeoPoint() {
-    return GeoPoint(latitude, longitude);
-  }
-
-  factory Location.fromGeoPoint(GeoPoint geoPoint) {
-    return Location(latitude: geoPoint.latitude, longitude: geoPoint.longitude);
-  }
-}

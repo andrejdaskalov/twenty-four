@@ -38,7 +38,8 @@ class PostApi {
       likes: e['likes'],
       mediaURIs: List<String>.from(e['mediaURIs']),
       topicId: e['topicId'],
-      date: e['date'].toDate()
+      date: e['date'].toDate(),
+      location: e['location'],
     )).toList();
   }
 
@@ -51,6 +52,7 @@ class PostApi {
       'date': post.date,
       'userUID': post.userUID,
       'likes': post.likes,
+      'location': post.location,
     });
   }
 

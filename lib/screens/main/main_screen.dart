@@ -122,11 +122,22 @@ class CardPost extends StatelessWidget {
         Text(post.title),
         Text(post.description),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            LikeButton(post: post),
-            CommentsButton(post: post),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                LikeButton(post: post),
+                CommentsButton(post: post),
+              ],
+            ),
+            Row(
+              children: [
+                const Icon(Icons.location_on),
+                Text(post.location ?? ""),
+              ],
+            )
           ],
         )
       ],

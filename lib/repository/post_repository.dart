@@ -6,6 +6,7 @@ import '../api/post_api.dart';
 import '../api/topic_api.dart';
 import '../domain/like_model.dart';
 import '../domain/post.dart';
+import '../service/location_service.dart';
 
 @injectable
 class PostRepository {
@@ -13,8 +14,9 @@ class PostRepository {
   final MediaApi _mediaApi;
   final TopicApi _topicApi;
   final LikesApi _likesApi;
+  final LocationService _locationService;
 
-  PostRepository(this._postApi, this._mediaApi, this._topicApi, this._likesApi);
+  PostRepository(this._postApi, this._mediaApi, this._topicApi, this._likesApi, this._locationService);
 
   Future<List<Post>> getPostsByTopicId(String topicId) async {
     var posts = await _postApi.getPostsByTopicId(topicId);
@@ -37,6 +39,7 @@ class PostRepository {
     final currentUser = FirebaseAuth.instance.currentUser?.uid;
     final imageURI = await _mediaApi.uploadImage(imagePath);
     final topic = await _topicApi.getTodayTopic();
+    final location = await _locationService.getLocation();
     final post = Post(
       title: title,
       description: description,
@@ -46,7 +49,7 @@ class PostRepository {
       date: DateTime.now(),
       likes: 0,
       id: '',
-      // TODO: Add location
+      location: location,
 
     );
     await _postApi.addPost(post);
