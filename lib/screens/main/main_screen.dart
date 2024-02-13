@@ -37,7 +37,7 @@ class MainScreen extends StatelessWidget {
           builder: (BuildContext context) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text("TwentyFour"),
+            title: const Text("TwentyFour", style: TextStyle(fontWeight: FontWeight.bold),),
             actions: [
               IconButton(
                 onPressed: () {

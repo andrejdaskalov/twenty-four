@@ -7,8 +7,9 @@ import 'package:twenty_four/repository/topic_repository.dart';
 import 'package:twenty_four/screens/LoginView.dart';
 import 'package:twenty_four/screens/RegisterView.dart';
 import 'package:twenty_four/screens/main/main_screen.dart';
-
 import 'firebase_options.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       title: 'TwentyFour',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: color ?? Colors.blueGrey),
+        textTheme: GoogleFonts.josefinSansTextTheme(),
         useMaterial3: true,
       ),
       routerConfig: GoRouter(routes: [

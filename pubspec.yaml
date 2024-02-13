@@ -47,6 +47,7 @@ dependencies:
   better_open_file: ^3.6.5
   geolocator: ^10.1.1
   geocoding: ^2.1.1
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   injectable_generator:
