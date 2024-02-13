@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:injectable/injectable.dart';
 import '../api/likes_api.dart';
@@ -7,6 +9,8 @@ import '../api/topic_api.dart';
 import '../domain/like_model.dart';
 import '../domain/post.dart';
 import '../service/location_service.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 
 @injectable
 class PostRepository {
@@ -38,6 +42,7 @@ class PostRepository {
 
   Future<void> addPost(String title, String description, String imagePath) async {
     final currentUser = FirebaseAuth.instance.currentUser?.uid;
+    await _compressImage(imagePath);
     final imageURI = await _mediaApi.uploadImage(imagePath);
     final topic = await _topicApi.getTodayTopic();
     final location = await _locationService.getLocation();
@@ -74,6 +79,13 @@ class PostRepository {
     final currentUser = FirebaseAuth.instance.currentUser?.uid;
     await _likesApi.removeLike(postId, currentUser ?? '');
     await _postApi.unlikePost(postId);
+  }
+
+  Future<void> _compressImage(String path) async {
+    await FlutterImageCompress.compressAndGetFile(
+      path, path,
+      quality: 88,
+    );
   }
 
 }
