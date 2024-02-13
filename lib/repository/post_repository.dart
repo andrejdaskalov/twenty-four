@@ -41,6 +41,10 @@ class PostRepository {
     final imageURI = await _mediaApi.uploadImage(imagePath);
     final topic = await _topicApi.getTodayTopic();
     final location = await _locationService.getLocation();
+    final userName = FirebaseAuth.instance.currentUser?.displayName != null
+        && FirebaseAuth.instance.currentUser!.displayName!.isNotEmpty
+        ? FirebaseAuth.instance.currentUser?.displayName
+        : FirebaseAuth.instance.currentUser?.email?.split('@').first;
     final post = Post(
       title: title,
       description: description,
@@ -51,7 +55,7 @@ class PostRepository {
       likes: 0,
       id: '',
       location: location,
-
+      userName: userName,
     );
     await _postApi.addPost(post);
   }

@@ -81,7 +81,7 @@ class CommentWidget extends StatelessWidget {
                     color: Theme.of(context).colorScheme.secondary,
                   )
                 ),
-                Text("${comment.date.toLocal()}",
+                Text("${comment.date.day}.${comment.date.month}.${comment.date.year} ${comment.date.hour.toString().padLeft(2, '0')}:${comment.date.minute.toString().padLeft(2, '0')}",
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                     ))

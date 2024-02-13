@@ -72,7 +72,7 @@ class MainScreen extends StatelessWidget {
               builder: (BuildContext context, MainScreenState state) {
                 final bloc = context.read<MainScreenBloc>();
                 debugPrint("From Builder: ${bloc.hashCode}");
-                final topic = state.topic ;
+                final topic = state.topic;
                 if (topic == null) {
                   return const Text("no topic");
                 } else if (state.state == MainScreenStateEnum.error) {
@@ -82,27 +82,27 @@ class MainScreen extends StatelessWidget {
                 return ListView(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(vertical: 30),
-                      child: FoldingHeading(topic: topic, height: 100,),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.background,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(20),
-                            topRight: Radius.circular(20),
-                          ),
+                        padding: const EdgeInsets.symmetric(vertical: 30),
+                        child: TopicHeading(
+                          topic: topic,
+                          height: 100,
+                        )),
+                    Container(
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.background,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
                         ),
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: state.posts?.length ?? 0,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CardPost(post: state.posts![index]);
-                          },
-                        ),
+                      ),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: state.posts?.length ?? 0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return CardPost(post: state.posts![index]);
+                        },
                       ),
                     )
                   ],
@@ -116,8 +116,8 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class FoldingHeading extends StatelessWidget {
-  const FoldingHeading({
+class TopicHeading extends StatelessWidget {
+  const TopicHeading({
     super.key,
     required this.topic,
     required this.height,
@@ -140,9 +140,8 @@ class FoldingHeading extends StatelessWidget {
             Text(
               "Today's topic: ",
               style: TextStyle(
-                color: Color(
-                    int.parse(topic!.color.replaceFirst("#", "0xFF")))
-                .withOpacity(0.5),
+                color: Color(int.parse(topic!.color.replaceFirst("#", "0xFF")))
+                    .withOpacity(0.5),
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -150,8 +149,7 @@ class FoldingHeading extends StatelessWidget {
             Text(
               topic.toString(),
               style: TextStyle(
-                color: Color(
-                    int.parse(topic!.color.replaceFirst("#", "0xFF"))),
+                color: Color(int.parse(topic!.color.replaceFirst("#", "0xFF"))),
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
@@ -174,34 +172,117 @@ class CardPost extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+        margin: const EdgeInsets.only(bottom: 20),
         child: Column(
-      children: [
-        (post.mediaURIs.isEmpty)
-            ? const Text("No media")
-            : Image.network(post.mediaURIs[0]),
-        Text(post.title),
-        Text(post.description),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                LikeButton(post: post),
-                CommentsButton(post: post),
-              ],
-            ),
-            Row(
-              children: [
-                const Icon(Icons.location_on),
-                Text(post.location ?? ""),
-              ],
+            (post.mediaURIs.isEmpty)
+                ? const Text("No media")
+                : Image.network(
+                    post.mediaURIs[0],
+                    loadingBuilder: (BuildContext context, Widget child,
+                        ImageChunkEvent? loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+                      return Center(
+                        child: CircularProgressIndicator(
+                          value: loadingProgress.expectedTotalBytes != null
+                              ? loadingProgress.cumulativeBytesLoaded /
+                                  loadingProgress.expectedTotalBytes!
+                              : null,
+                        ),
+                      );
+                    },
+                  ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Column(
+                          children: [
+                            Text(post.title),
+                            Text(post.description),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.account_circle,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer
+                                    .withOpacity(0.7),
+                              ),
+                            ),
+                            Text(post.userName ?? ""),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          LikeButton(post: post),
+                          CommentsButton(post: post),
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                                "${post.date.day}.${post.date.month}.${post.date.year} ${post.date.hour.toString().padLeft(2, '0')}:${post.date.minute.toString().padLeft(2, '0')}",
+                                style: TextStyle(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                      .withOpacity(0.7),
+                                )),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.location_on,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onPrimaryContainer
+                                      .withOpacity(0.7),
+                                ),
+                                Text(post.location ?? "",
+                                    style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onPrimaryContainer
+                                          .withOpacity(0.7),
+                                    )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
             )
           ],
-        )
-      ],
-    ));
+        ));
   }
 }
 

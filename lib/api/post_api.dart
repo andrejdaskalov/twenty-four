@@ -21,6 +21,7 @@ class PostApi {
           date: DateTime.now(),
           description: '',
           userUID: '',
+          userName: '',
         )
       ];
     }
@@ -40,6 +41,7 @@ class PostApi {
       topicId: e['topicId'],
       date: e['date'].toDate(),
       location: e['location'],
+      userName: e['userName'],
     )).toList();
   }
 
