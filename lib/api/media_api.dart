@@ -8,6 +8,9 @@ import 'package:injectable/injectable.dart';
 class MediaApi {
   final storageRef = FirebaseStorage.instance;
   Future<String> getDownloadURL(String path) async {
+    if (path.isEmpty) {
+      return '';
+    }
     return await storageRef.refFromURL(path).getDownloadURL();
   }
 

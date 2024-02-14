@@ -45,6 +45,7 @@ class PostApi {
       'userUID': post.userUID,
       'likes': post.likes,
       'location': post.location,
+      'userName': post.userName,
     });
   }
 
