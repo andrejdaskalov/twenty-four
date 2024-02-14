@@ -13,17 +13,7 @@ class PostApi {
         .get();
     final docs = snapshot.docs;
     if (docs.isEmpty) {
-      return [
-        Post(
-          id: "0",
-          topicId: "0",
-          title: 'No post for this topic',
-          date: DateTime.now(),
-          description: '',
-          userUID: '',
-          userName: '',
-        )
-      ];
+      return [];
     }
     final data = docs.map((e) {
       final element = e.data() as Map<String, dynamic>;

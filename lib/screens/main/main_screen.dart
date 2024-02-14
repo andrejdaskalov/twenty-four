@@ -101,6 +101,12 @@ class MainScreen extends StatelessWidget {
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: state.posts?.length ?? 0,
                         itemBuilder: (BuildContext context, int index) {
+                          if (state.posts == null || state.posts!.isEmpty) {
+                            return const Text("No posts",
+                                style: TextStyle(
+                                  color: Colors.black,
+                                ));
+                          }
                           return CardPost(post: state.posts![index]);
                         },
                       ),
@@ -128,16 +134,14 @@ class TopicHeading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-      child: SizedBox(
-        height: height,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
+    return SizedBox(
+      height: height,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Flexible(
+            child: Text(
               "Today's topic: ",
               style: TextStyle(
                 color: Color(int.parse(topic!.color.replaceFirst("#", "0xFF")))
@@ -145,17 +149,23 @@ class TopicHeading extends StatelessWidget {
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
+              softWrap: true,
+              maxLines: 2,
             ),
-            Text(
+          ),
+          Flexible(
+            child: Text(
               topic.toString(),
               style: TextStyle(
                 color: Color(int.parse(topic!.color.replaceFirst("#", "0xFF"))),
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
+              softWrap: true,
+              maxLines: 2,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
