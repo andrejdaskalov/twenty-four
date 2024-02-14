@@ -39,7 +39,7 @@ To clone the app, you must provide your own credentials and activate the necessa
 The services used are:
 
 - Firebase Authentication: with email and password provider
-- Cloud Firestore: the noSQL database used to store the posts,comments, topics, and likes
+- Cloud Firestore: the noSQL database used to store the posts, comments, topics, and likes
 - Firebase Storage: used to store the images of the posts
 
 # Packages used
@@ -63,7 +63,7 @@ The full list of packages used:
 
 # Architecture
 
-## Bloc pattern
+## BLoC pattern
 
 The app uses the BLoC pattern for state management.
 The BLoC pattern is used to separate the business logic from the UI.
