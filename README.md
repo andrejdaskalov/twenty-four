@@ -12,6 +12,10 @@ a single topic, and to see how different people interpret the same topic.
 It is a project for the Mobile Information Systems course at the Faculty of Computer Science and
 Engineering, Skopje.
 
+# Screenshots
+
+![scr_twentyfour_1](https://github.com/andrejdaskalov/twenty-four/assets/41647331/3bfd9a53-ed68-4a2a-ab44-c6f8ce214fa2)
+![scr_twentyfour_2](https://github.com/andrejdaskalov/twenty-four/assets/41647331/48450a9b-7cd3-4966-869a-8fcbc9b8a1bb)
 
 # Getting Started
 
